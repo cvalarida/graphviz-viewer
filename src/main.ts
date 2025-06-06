@@ -3,40 +3,52 @@ import { graphviz } from "d3-graphviz";
 import { type Graph, parseDot, collectRelatedNodes } from "./parseDot";
 
 function bindHoverBehavior(graph: Graph) {
+  const labelEl = document.getElementById("node-label")!;
+  const ancestorEl = document.getElementById("ancestors")!;
+  const descendantEl = document.getElementById("descendants")!;
+
   selectAll("g.node").each(function () {
     const g = select(this);
     const id = g.select("title").text();
 
     g.on("mouseenter", () => {
-      const related = collectRelatedNodes(graph, id);
-      related.add(id); // Include the hovered node
+      const ancestors = collectRelatedNodes(id, graph.reverse);
+      const descendants = collectRelatedNodes(id, graph.forward);
+      const all = new Set([id, ...ancestors, ...descendants]);
 
-      // Highlight related nodes
+      // Highlight nodes
       selectAll("g.node").each(function () {
-        const node = select(this);
-        const nodeId = node.select("title").text();
-        node
-          .classed("highlight", related.has(nodeId))
-          .classed("dimmed", !related.has(nodeId));
+        const nodeId = select(this).select("title").text();
+        select(this)
+          .classed("highlight", all.has(nodeId))
+          .classed("dimmed", !all.has(nodeId));
       });
 
-      // Highlight edges that connect related nodes
+      // Highlight edges
       selectAll("g.edge").each(function () {
-        const edge = select(this);
-        const label = edge.select("title").text(); // Format: "a->b"
-
+        const label = select(this).select("title").text();
         const [from, to] = label.split("->").map((s) => s.trim());
-        const isRelevant =
-          related.has(from) && related.has(to) && graph.edges.has(label);
-
-        edge.classed("highlight", isRelevant).classed("dimmed", !isRelevant);
+        const show = all.has(from) && all.has(to) && graph.edges.has(label);
+        select(this).classed("highlight", show).classed("dimmed", !show);
       });
+
+      // Update sidebar
+      labelEl.textContent = id;
+      ancestorEl.innerHTML = [...ancestors]
+        .map((n) => `<li>${n}</li>`)
+        .join("");
+      descendantEl.innerHTML = [...descendants]
+        .map((n) => `<li>${n}</li>`)
+        .join("");
     });
 
     g.on("mouseleave", () => {
       selectAll("g.node, g.edge")
         .classed("highlight", false)
         .classed("dimmed", false);
+      labelEl.textContent = "";
+      ancestorEl.innerHTML = "";
+      descendantEl.innerHTML = "";
     });
   });
 }

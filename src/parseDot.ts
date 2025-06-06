@@ -25,26 +25,20 @@ export function parseDot(dot: string): Graph {
   return { forward, reverse, edges };
 }
 
-export function collectRelatedNodes(graph: Graph, start: string): Set<string> {
-  function dfs(
-    from: string,
-    map: Map<string, Set<string>>,
-    visited: Set<string>,
-  ) {
-    if (visited.has(from)) return;
-    visited.add(from);
-    for (const neighbor of map.get(from) ?? []) {
-      dfs(neighbor, map, visited);
+export function collectRelatedNodes(
+  start: string,
+  map: Map<string, Set<string>>,
+): Set<string> {
+  const visited = new Set<string>();
+  const stack = [start];
+  while (stack.length > 0) {
+    const current = stack.pop()!;
+    for (const neighbor of map.get(current) ?? []) {
+      if (!visited.has(neighbor)) {
+        visited.add(neighbor);
+        stack.push(neighbor);
+      }
     }
   }
-
-  const upstream = new Set<string>();
-  const downstream = new Set<string>();
-
-  dfs(start, graph.reverse, upstream); // parents
-  dfs(start, graph.forward, downstream); // children
-
-  // Merge both
-  const combined = new Set<string>([...upstream, ...downstream, start]);
-  return combined;
+  return visited;
 }
