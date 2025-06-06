@@ -11,21 +11,22 @@
       <h1 class="text-3xl font-bold text-center">Graphviz DOT Viewer</h1>
 
       <div class="flex items-center justify-center gap-4">
-        <label for="dot-file" class="text-lg font-medium"
+        <label for="dot-file" class="text-lg font-medium cursor-pointer"
           >Upload a .dot File:</label
         >
         <input
           type="file"
           id="dot-file"
           accept=".dot,.txt"
-          class="file:px-4 file:py-2 file:border-0 file:rounded file:bg-blue-600 file:text-white hover:file:bg-blue-700 transition"
+          class="file:px-4 file:py-2 file:border-0 file:rounded file:bg-blue-600 file:text-white hover:file:bg-blue-700 transition cursor-pointer"
         />
       </div>
 
       <div
-        id="graph"
-        class="w-full min-h-[600px] bg-white border border-gray-300 rounded shadow p-4"
-      ></div>
+        class="max-h-[90vh] overflow-auto rounded border border-gray-300 bg-white shadow"
+      >
+        <div id="graph" class="min-w-[800px] min-h-[600px] p-4"></div>
+      </div>
     </div>
 
     <script type="module" src="/src/main.js"></script>
