@@ -43,3 +43,7 @@ g.node.pinned polygon {
   stroke-width: 3px;
   filter: drop-shadow(0 0 2px rgba(79, 70, 229, 0.5));
 }
+
+g.node {
+  cursor: pointer;
+}
