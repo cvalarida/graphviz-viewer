@@ -35,7 +35,7 @@ g.edge.highlight text {
 g.edge.dimmed path,
 g.edge.dimmed polygon,
 g.edge.dimmed text {
-  opacity: 0.2;
+  opacity: 0;
 }
 
 g.node.pinned polygon {
