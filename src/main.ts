@@ -81,6 +81,7 @@ function bindHoverBehavior(graph: Graph) {
 
 document.addEventListener("DOMContentLoaded", () => {
   const renderer = graphviz("#graph");
+  renderer.zoomScaleExtent([0.1, 20]); // Allow more aggressive zoom
 
   renderer.on("initEnd", () => {
     const input = document.getElementById("dot-file");
