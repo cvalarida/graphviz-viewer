@@ -2,6 +2,8 @@ import { select, selectAll } from "d3-selection";
 import { graphviz } from "d3-graphviz";
 import { type Graph, parseDot, collectRelatedNodes } from "./parseDot";
 
+let pinnedNodeId: string | null = null;
+
 function bindHoverBehavior(graph: Graph) {
   const labelEl = document.getElementById("node-label")!;
   const ancestorEl = document.getElementById("ancestors")!;
@@ -12,45 +14,64 @@ function bindHoverBehavior(graph: Graph) {
     const id = g.select("title").text();
 
     g.on("mouseenter", () => {
-      const ancestors = collectRelatedNodes(id, graph.reverse);
-      const descendants = collectRelatedNodes(id, graph.forward);
-      const all = new Set([id, ...ancestors, ...descendants]);
-
-      // Highlight nodes
-      selectAll("g.node").each(function () {
-        const nodeId = select(this).select("title").text();
-        select(this)
-          .classed("highlight", all.has(nodeId))
-          .classed("dimmed", !all.has(nodeId));
-      });
-
-      // Highlight edges
-      selectAll("g.edge").each(function () {
-        const label = select(this).select("title").text();
-        const [from, to] = label.split("->").map((s) => s.trim());
-        const show = all.has(from) && all.has(to) && graph.edges.has(label);
-        select(this).classed("highlight", show).classed("dimmed", !show);
-      });
-
-      // Update sidebar
-      labelEl.textContent = id;
-      ancestorEl.innerHTML = [...ancestors]
-        .map((n) => `<li>${n}</li>`)
-        .join("");
-      descendantEl.innerHTML = [...descendants]
-        .map((n) => `<li>${n}</li>`)
-        .join("");
+      if (pinnedNodeId) return; // skip updates if pinned
+      updateSidebar(graph, id);
     });
 
     g.on("mouseleave", () => {
-      selectAll("g.node, g.edge")
-        .classed("highlight", false)
-        .classed("dimmed", false);
-      labelEl.textContent = "";
-      ancestorEl.innerHTML = "";
-      descendantEl.innerHTML = "";
+      if (pinnedNodeId) return;
+      clearSidebar();
+    });
+
+    g.on("click", () => {
+      if (pinnedNodeId === id) {
+        pinnedNodeId = null;
+        clearSidebar();
+      } else {
+        pinnedNodeId = id;
+        updateSidebar(graph, id);
+      }
     });
   });
+
+  function updateSidebar(graph: Graph, id: string) {
+    const ancestors = collectRelatedNodes(id, graph.reverse);
+    const descendants = collectRelatedNodes(id, graph.forward);
+    const all = new Set([id, ...ancestors, ...descendants]);
+
+    // Sidebar
+    labelEl.textContent = id;
+    ancestorEl.innerHTML = [...ancestors].map((n) => `<li>${n}</li>`).join("");
+    descendantEl.innerHTML = [...descendants]
+      .map((n) => `<li>${n}</li>`)
+      .join("");
+
+    // Highlight
+    selectAll("g.node").each(function () {
+      const nodeId = select(this).select("title").text();
+      select(this)
+        .classed("highlight", all.has(nodeId))
+        .classed("dimmed", !all.has(nodeId));
+    });
+
+    selectAll("g.edge").each(function () {
+      const label = select(this).select("title").text();
+      const [from, to] = label.split("->").map((s) => s.trim());
+      const isRelevant = all.has(from) && all.has(to) && graph.edges.has(label);
+      select(this)
+        .classed("highlight", isRelevant)
+        .classed("dimmed", !isRelevant);
+    });
+  }
+
+  function clearSidebar() {
+    labelEl.textContent = "";
+    ancestorEl.innerHTML = "";
+    descendantEl.innerHTML = "";
+    selectAll("g.node, g.edge")
+      .classed("highlight", false)
+      .classed("dimmed", false);
+  }
 }
 
 document.addEventListener("DOMContentLoaded", () => {
