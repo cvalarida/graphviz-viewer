@@ -24,12 +24,17 @@ function bindHoverBehavior(graph: Graph) {
     });
 
     g.on("click", () => {
-      if (pinnedNodeId === id) {
-        pinnedNodeId = null;
-        clearSidebar();
+      const wasPinned = pinnedNodeId === id;
+      pinnedNodeId = wasPinned ? null : id;
+
+      // Remove 'pinned' from all
+      selectAll("g.node").classed("pinned", false);
+
+      if (pinnedNodeId) {
+        select(this).classed("pinned", true);
+        updateSidebar(graph, pinnedNodeId);
       } else {
-        pinnedNodeId = id;
-        updateSidebar(graph, id);
+        clearSidebar();
       }
     });
   });

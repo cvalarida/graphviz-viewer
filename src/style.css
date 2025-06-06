@@ -37,3 +37,9 @@ g.edge.dimmed polygon,
 g.edge.dimmed text {
   opacity: 0.2;
 }
+
+g.node.pinned polygon {
+  stroke: #4f46e5; /* Indigo */
+  stroke-width: 3px;
+  filter: drop-shadow(0 0 2px rgba(79, 70, 229, 0.5));
+}
