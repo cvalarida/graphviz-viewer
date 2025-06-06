@@ -1,5 +1,4 @@
 // src/main.js
-import * as d3 from "d3";
 import { graphviz } from "d3-graphviz";
 
 document.addEventListener("DOMContentLoaded", () => {
@@ -9,6 +8,7 @@ document.addEventListener("DOMContentLoaded", () => {
     const input = document.getElementById("dot-file");
 
     input?.addEventListener("change", (event) => {
+      // @ts-expect-error It's gonna have files. 🤫
       const file = event.target?.files[0];
       if (!file) return;
 
