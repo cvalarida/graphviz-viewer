@@ -15,3 +15,25 @@
     text-decoration-line: underline;
   }
 }
+
+g.node.highlight {
+  opacity: 1;
+}
+
+g.node.dimmed {
+  opacity: 0.2;
+}
+
+/* Highlighted edge */
+g.edge.highlight path,
+g.edge.highlight polygon,
+g.edge.highlight text {
+  opacity: 1;
+}
+
+/* Dimmed edge */
+g.edge.dimmed path,
+g.edge.dimmed polygon,
+g.edge.dimmed text {
+  opacity: 0.2;
+}
