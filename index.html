@@ -6,24 +6,25 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <link href="/src/style.css" rel="stylesheet" />
   </head>
-  <body class="min-h-screen bg-gray-50 text-gray-800 p-8 font-sans">
-    <div class="max-w-4xl mx-auto space-y-6">
-      <h1 class="text-3xl font-bold text-center">Graphviz DOT Viewer</h1>
+  <body class="min-h-screen bg-gray-50 text-gray-800 p-8 font-sans flex">
+    <div class="w-full flex flex-col flex-1 space-y-6">
+      <div>
+        <h1 class="text-3xl font-bold text-center">Graphviz DOT Viewer</h1>
 
-      <div class="flex items-center justify-center gap-4">
-        <label for="dot-file" class="text-lg font-medium cursor-pointer"
-          >Upload a .dot File:</label
-        >
-        <input
-          type="file"
-          id="dot-file"
-          accept=".dot,.txt"
-          class="file:px-4 file:py-2 file:border-0 file:rounded file:bg-blue-600 file:text-white hover:file:bg-blue-700 transition cursor-pointer"
-        />
+        <div class="flex items-center justify-center gap-4">
+          <label for="dot-file" class="text-lg font-medium cursor-pointer"
+            >Upload a .dot File:</label
+          >
+          <input
+            type="file"
+            id="dot-file"
+            accept=".dot,.txt"
+            class="file:px-4 file:py-2 file:border-0 file:rounded file:bg-blue-600 file:text-white hover:file:bg-blue-700 transition cursor-pointer"
+          />
+        </div>
       </div>
-
       <div
-        class="max-h-[90vh] overflow-auto rounded border border-gray-300 bg-white shadow"
+        class="flex-1 overflow-auto rounded border border-gray-300 bg-white shadow"
       >
         <div id="graph" class="min-w-[800px] min-h-[600px] p-4"></div>
       </div>
