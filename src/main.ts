@@ -1,4 +1,3 @@
-// src/main.js
 import { graphviz } from "d3-graphviz";
 
 document.addEventListener("DOMContentLoaded", () => {
