@@ -8,7 +8,7 @@ function bindHoverBehavior(graph: Graph) {
     const id = g.select("title").text();
 
     g.on("mouseenter", () => {
-      const related = collectRelatedNodes(graph, id, "reverse");
+      const related = collectRelatedNodes(graph, id);
       related.add(id); // Include the hovered node
 
       // Highlight related nodes
